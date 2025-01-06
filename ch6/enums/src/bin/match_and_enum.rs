@@ -45,7 +45,43 @@ fn main() {
         }
     }
 
+    // Some is a special word, it is any. opposite of None
     let five = Some(5);
     let six = plus_one(five);
     let none = plus_one(None);
+
+    // Matches are exhaustive
+    // the arm's patterns MUST cover all possibilities
+    // if we remove the None case from the plus_one fn, then we get a compile error because it doesn't know how to handle the none case
+
+    // fn plus_one(x: Option<i32>) -> Option<i32> {
+    //     match x {
+    //         Some(i) => Some(i + 1),
+    //     }
+    // }
+
+    // Catch-all Patterns and the _ Placeholder
+
+    let dice_roll = 9;
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        // every other case handled by other - I can change to whatever name
+        other1 => move_player(other1),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn move_player(num_spaces: u8) {}
+    // why does this work? because the last pattern will match all values not specifically listed..
+    // rust will warn if you but arms after the catch all arm
+
+    // pattern for when we don't want to use the value in the catch all arm and that is _ (this is just like python) so rust won't warn us about an unused variable
+    let dice_roll = 9;
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        // this is the very special do nothing
+        _ => (),
+    }
 }
