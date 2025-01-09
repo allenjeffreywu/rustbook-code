@@ -34,16 +34,16 @@ mod front_of_house {
     }
 }
 
-pub fn eat_at_restaurant() {
-    // Absolute path
-    // pref using absolute paths because it's more likely we'll want to move code definitions and item calls independently of each other
-    // doesn't compile because all modules are preivate by default - we must expose with pub
-    // parent cant see private values of child, but child can see private values of parent
-    crate::front_of_house::hosting::add_to_waitlist();
+// pub fn eat_at_restaurant() {
+//     // Absolute path
+//     // pref using absolute paths because it's more likely we'll want to move code definitions and item calls independently of each other
+//     // doesn't compile because all modules are preivate by default - we must expose with pub
+//     // parent cant see private values of child, but child can see private values of parent
+//     crate::front_of_house::hosting::add_to_waitlist();
 
-    // Relative path
-    front_of_house::hosting::add_to_waitlist();
-}
+//     // Relative path
+//     front_of_house::hosting::add_to_waitlist();
+// }
 
 // Starting relative paths with super
 // super of course refers to the parent
@@ -81,6 +81,28 @@ mod back_of_house {
         Salad,
     }
 }
+
+// use is import
+// however this only applies to this scope. if we had the following it would NOT compile
+// use crate::front_of_house::hosting;
+// mod customer {
+//     pub fn eat_at_restaurant() {
+//         hosting::add_to_waitlist();
+//     }
+// }
+// to fix you would have to move use INTO the customer module
+// or reference the parent module with super::hosting
+
+//The exception to this idiom is if we’re bringing two items with the same name into scope with use statements, because Rust doesn’t allow that.
+// fix this with the as keyword (like sql)
+// use std::fmt::Result;
+// use std::io::Result as IoResult;
+
+// you can also re export something to make it more available
+pub use crate::front_of_house::hosting;
+// useful when the internal structure of the code is different from how programmers calling your code would think about the domain (like we wouldn't think about front of house and back of house.)
+// you can now use add_to_waitlist without having to call front of house: `restaurant::hosting::add_to_waitlist()`
+
 pub fn eat_at_restaurant() {
     // Order a breakfast in the summer with Rye toast
     let mut meal = back_of_house::Breakfast::summer("Rye");
@@ -94,4 +116,33 @@ pub fn eat_at_restaurant() {
 
     let order1 = back_of_house::Appetizer::Soup;
     let order2 = back_of_house::Appetizer::Salad;
+
+    // can now add to waitlist
+    hosting::add_to_waitlist();
 }
+
+// using external packages
+// add to Cargo.toml
+// then we can use parts of the crate:
+// use rand::Rng;
+// view more crates at crates.io
+
+// using nested paths to clean up large lists
+
+// turn this:
+// use std::cmp::Ordering;
+// use std::io;
+
+// into this
+// use std::{cmp::Ordering, io};
+// like typescript
+
+// also this
+// use std::io;
+// use std::io::Write;
+
+// into this
+// use std::io::{self, Write};
+
+// bring all with the glob operator like java
+// use std::collections::*;
