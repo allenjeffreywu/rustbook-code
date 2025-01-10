@@ -146,3 +146,7 @@ pub fn eat_at_restaurant() {
 
 // bring all with the glob operator like java
 // use std::collections::*;
+
+// Separating Modules into Differnt Files
+
+mod allen_file;
