@@ -6,7 +6,14 @@
 // Defining a trait
 pub trait Summary {
     // no implementation here, let those that have this trait implement it instead
-    fn summarize(&self) -> String;
+
+    // it's also possible to have default implementations use other default implementations
+    fn summarize_author(&self) -> String;
+
+    // if you want a default implementation of a method you can define it here.
+    fn summarize(&self) -> String {
+        format!("(Read more from {}...)", self.summarize_author())
+    }
 }
 // trait keyword
 // pub so that crates depending on this crate can make use of this trait too
@@ -20,6 +27,10 @@ pub struct NewsArticle {
 }
 
 impl Summary for NewsArticle {
+    fn summarize_author(&self) -> String {
+        format!("@{}", self.author)
+    }
+
     fn summarize(&self) -> String {
         format!("{}, by {} ({})", self.headline, self.author, self.location)
     }
@@ -33,6 +44,9 @@ pub struct Tweet {
 }
 
 impl Summary for Tweet {
+    fn summarize_author(&self) -> String {
+        format!("@{}", self.username)
+    }
     fn summarize(&self) -> String {
         format!("{}: {}", self.username, self.content)
     }
@@ -47,7 +61,12 @@ impl Summary for Tweet {
 // we cannot implement Display trait on Vec<T> here because they are both external
 // orphan rule - the parent type must be present to implement.
 
-// Default implementations
+// default implementations
+// you can use a default implementation by doing:
+// impl Summary for NewsArticle {}
+// if empty, then we assume the default implementations for NewsArticle
+
+// traits as parameters
 
 fn main() {
     println!("Hello Allen");
