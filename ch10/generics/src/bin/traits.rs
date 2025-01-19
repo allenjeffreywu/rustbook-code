@@ -67,6 +67,75 @@ impl Summary for Tweet {
 // if empty, then we assume the default implementations for NewsArticle
 
 // traits as parameters
+// instead of a concrete type for the item parameter, we specify anything that implements the summary trait
+
+pub fn notify(item: &impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}
+
+// trait bound syntax (the formal version of &impl Summary
+pub fn notify_2<T: Summary>(item: &T) {
+    println!("Breaking news! {}", item.summarize());
+}
+
+// makes some cases more concise:
+// pub fn notify<T: Summary>(item1: &T, item2: &T)
+
+// specifying multiple trait bounds with the + syntax
+// either:
+// 1
+// pub fn notify(item: &(impl Summary + Display))
+// 2
+// pub fn notify<T: Summary + Display>(item: &T)
+
+// clearer trait bounds with where clauses
+// instead of:
+// fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32 {
+// we can do the following:
+/*
+fn some_function<T, U>(t: &T, u: &U) -> i32
+where
+    T: Display + Clone,
+    U: Clone + Debug,
+{
+*/
+
+// returning types that implement traits
+// THIS ONLY WORKS IF YOU ARE RETURNING ONLY ONE TYPE
+// RETURNING A TWEET OR A NEWS ARTICLE DOES NOT WORK
+fn returns_summarizable() -> impl Summary {
+    Tweet {
+        username: String::from("horse_ebooks"),
+        content: String::from("of course, as you probably already know, people"),
+        reply: false,
+        retweet: false,
+    }
+}
+
+// Using trait bounds to conditionally implement methods
+use std::fmt::Display;
+
+struct Pair<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Pair<T> {
+    fn new(x: T, y: T) -> Self {
+        Self { x, y }
+    }
+}
+
+// implementation only works for Display and PartialOrd
+impl<T: Display + PartialOrd> Pair<T> {
+    fn cmp_display(&self) {
+        if self.x >= self.y {
+            println!("The largest member is x = {}", self.x);
+        } else {
+            println!("The largest member is y = {}", self.y);
+        }
+    }
+}
 
 fn main() {
     println!("Hello Allen");
@@ -78,4 +147,5 @@ fn main() {
     };
 
     println!("1 new tweet: {}", tweet.summarize());
+    notify(&tweet);
 }
