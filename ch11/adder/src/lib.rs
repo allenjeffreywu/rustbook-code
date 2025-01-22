@@ -154,3 +154,30 @@ mod tests {
         }
     }
 }
+
+// controlling how tests are run
+// default behavior of cargo test:
+// run all in parallel, and capture output generated
+// list arguments that go to cargo test followed by the separator -- and then the ones that go to the test binary
+// cargo test -- help displays options you can use with cargo test
+// cargo test -- --help displays the options you can use after the separator
+
+// running tests in parallel or consecutively
+// you can use the --test-threads flag and the number of threads you want to use to test the binary:
+// cargo test -- --test-threads=1
+// this makes it run consecutively
+
+// showing function output
+// if we want to see printed values for passing tests use `cargo test -- --show-output`
+
+// Running a subset of tests by name
+// cargi test <test_name>
+
+// filtering to run multiple tests
+// cargo test <portion of the test name>
+// the module in which a test appears becomes part of the test's name
+
+// ignoring some tests unless specifically requested
+// use the #[ignore] attribute to exclude them just under the #[test]
+// if we want to ONLY run ignored tests, we can do cargo test -- --ignored
+// if you want to include all tests together, do cargo test -- --include-ignored
