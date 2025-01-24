@@ -181,3 +181,42 @@ mod tests {
 // use the #[ignore] attribute to exclude them just under the #[test]
 // if we want to ONLY run ignored tests, we can do cargo test -- --ignored
 // if you want to include all tests together, do cargo test -- --include-ignored
+
+// Test organization
+
+// unit tests: small and focused
+// integration tests: external to library, and use your code in the same way a user would
+
+// put unit tests in src directory in each file WITH the code that they're testing. Create a module named tests in each file to contain the test functions and to annotate the module with cfg(test)
+
+// cfg = configuration
+// rust knows that with cfg test, it will only compile this code when we do cargo test
+
+pub fn add_two_2(a: usize) -> usize {
+    internal_adder(a, 2)
+}
+
+fn internal_adder(left: usize, right: usize) -> usize {
+    left + right
+}
+
+// testing internal tests is possible. Children can access ancestors
+#[cfg(test)]
+mod tests_1 {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let result = add(2, 2);
+        assert_eq!(result, 4);
+    }
+
+    #[test]
+    fn internal() {
+        let result = internal_adder(2, 2);
+        assert_eq!(result, 4);
+    }
+}
+
+// integration tests
+// see tests directory
