@@ -21,7 +21,10 @@ fn main() {
 
     // unwrap or else is a special method that allows us to do some special error handling
     let config = Config::build(&args).unwrap_or_else(|err| {
-        println!("Problem parsing arguments: {err}");
+        eprintln!("Problem parsing arguments: {err}"); // eprint prints to standard error
+                                                       // why use stderror?
+                                                       // because errors do not belong in stdout. That is general information
+                                                       // we can still have both stdout and stderror. Print what we know in stdout and print what went wrong with what we know in stderr
         process::exit(1);
     });
 
@@ -31,7 +34,7 @@ fn main() {
     // reading a file
     // use if let here because we don't care about the returned value, (). better to only handle the error case with if let
     if let Err(e) = minigrep::run(config) {
-        println!("Application error: {e}");
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 
